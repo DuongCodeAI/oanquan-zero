@@ -210,7 +210,12 @@ def main():
         last_gen = f"gen{lab['elo']['points'][-1]['gen']}"
         by_sims = {m["sims"]: m for m in pm if m["a"] == last_gen and m["b"] == "minimax8"}
         lab["search_scaling"] = [
-            {"sims": k, "pair_score": m["pair_score"], "se": m["se"], "wdl": [m["pair_win"], m["pair_draw"], m["pair_loss"]]}
+            {
+                "sims": k,
+                "pair_score": m["pair_score"],
+                "se": m["se"],
+                "wdl": [m["pair_win"], m["pair_draw"], m["pair_loss"]],
+            }
             for k, m in sorted(by_sims.items())
         ]
     lab["ab_v2"] = [m for m in pm if "@" in m["a"]]

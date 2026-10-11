@@ -51,7 +51,8 @@ NOTES = [
     {
         "title": "Ai đi trước thì thắng, nên tỉ lệ thắng từng ván vô dụng",
         "body": "Ở bàn chuẩn người đi trước thắng 77-90% số ván, nên trận nào tính từng ván cũng ra ~50%: "
-        "minimax 8 nước đấu minimax 2 nước chỉ 'thắng 69%', nhưng tính theo cặp ván (cùng khai cuộc, đổi bên) thì thắng 40/40. "
+        "minimax 8 nước đấu minimax 2 nước chỉ 'thắng 69%', nhưng tính theo cặp ván (cùng khai cuộc, đổi bên) "
+        "thì thắng 40/40. "
         "Mình đã train thêm một lượt trước khi nhận ra. Giờ mọi số đều tính theo cặp.",
     },
     {

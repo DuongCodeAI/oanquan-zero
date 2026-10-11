@@ -1,0 +1,5 @@
+chạy tiếp từ thế hệ 80
+{"gen": 81, "selfplay_s": 37.7, "train_s": 9.7, "positions": 24958, "games": 1000, "sims": 400, "len_mean": 24.958, "first_player_margin": 11.532, "first_player_win": 0.829, "draw": 0.027, "loss_policy": 0.7662, "loss_value": 0.01433}
+{"gen": 82, "selfplay_s": 27.1, "train_s": 6.9, "positions": 27165, "games": 1000, "sims": 400, "len_mean": 27.165, "first_player_margin": 11.314, "first_player_win": 0.809, "draw": 0.037, "loss_policy": 0.7517, "loss_value": 0.01459}
+{"gen": 83, "selfplay_s": 35.9, "train_s": 6.3, "positions": 28689, "games": 1000, "sims": 400, "len_mean": 28.689, "first_player_margin": 10.308, "first_player_win": 0.815, "draw": 0.033, "loss_policy": 0.7333, "loss_value": 0.01425}
+{"gen": 84, "selfplay_s": 23.7, "train_s": 6.4, "positions": 27568, "games": 1000, "sims": 400, "len_mean": 27.568, "first_player_margin": 11.825, "first_player_win": 0.834, "draw": 0.026, "loss_policy": 0.7303, "loss_value": 0.01382}

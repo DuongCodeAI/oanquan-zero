@@ -592,12 +592,30 @@ footer {
   color: var(--ink-soft);
 }
 
+.dir-bar {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  font-size: 15px;
+}
+
 @media (max-width: 600px) {
   .wrap {
     padding: 0 16px;
   }
-  .top nav {
+  .top nav,
+  .brand small,
+  .svg-only {
     display: none;
+  }
+  .dir-bar {
+    display: flex;
+  }
+  .dir-bar .btn {
+    flex: 1;
+    padding: 12px 10px;
   }
 }
 

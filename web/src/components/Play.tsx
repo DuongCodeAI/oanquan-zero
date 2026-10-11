@@ -47,6 +47,7 @@ export function Play() {
   const [lastAction, setLastAction] = useState<{ player: number; a: number } | null>(null)
   const [predicted, setPredicted] = useState<number | null>(null)
   const [aiFirst, setAiFirst] = useState(false)
+  const [selected, setSelected] = useState<number | null>(null)
   const gameId = useRef(0)
 
   useEffect(() => {
@@ -244,7 +245,41 @@ export function Play() {
   return (
     <section className="arena" id="choi">
       <div className="board-shell">
-        <Board v={V} st={display} hand={hand} flash={flash} playable={mask} onMove={onHumanMove} thought={thought} lastAction={lastAction} />
+        <Board
+          v={V}
+          st={display}
+          hand={hand}
+          flash={flash}
+          playable={mask}
+          onMove={onHumanMove}
+          thought={thought}
+          lastAction={lastAction}
+          selected={selected}
+          onSelect={setSelected}
+        />
+        {selected !== null && mask[2 * selected] && (
+          <div className="dir-bar">
+            <span>Ô {selected + 1}:</span>
+            <button
+              className="btn solid"
+              onClick={() => {
+                setSelected(null)
+                onHumanMove(2 * selected + 1)
+              }}
+            >
+              ← Rải sang trái
+            </button>
+            <button
+              className="btn solid"
+              onClick={() => {
+                setSelected(null)
+                onHumanMove(2 * selected)
+              }}
+            >
+              Rải sang phải →
+            </button>
+          </div>
+        )}
         <div className="status" aria-live="polite">
           <span className="msg">{error ? `Lỗi: ${error}` : net ? msg : 'Đang tải model…'}</span>
         </div>

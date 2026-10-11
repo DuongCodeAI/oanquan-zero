@@ -93,7 +93,7 @@ export function Lab() {
           <span>ván tự đánh trên bàn chuẩn, {tb.gens} thế hệ</span>
         </div>
         <div className="spec">
-          <b>{tb.minutes} phút</b>
+          <b>{num(tb.minutes)} phút</b>
           <span>tổng thời gian train bàn chuẩn</span>
         </div>
         <div className="spec">
@@ -109,17 +109,17 @@ export function Lab() {
           <p>
             Bàn chuẩn quá lớn để biết nước nào là tốt nhất. Nên mình thu nhỏ bàn còn {L.squares} ô × {L.stones} dân, viết
             solver duyệt hết <strong>{num(L.states)} thế cờ</strong> và tính nước tối ưu của từng thế, rồi train AI trên
-            bàn đó đúng như bàn chuẩn ({num(ts.games)} ván, {ts.minutes} phút).
+            bàn đó đúng như bàn chuẩn ({num(ts.games)} ván, {num(ts.minutes)} phút).
           </p>
           <p>
             Đề thi cố định: {num(first.n_positions)} thế cờ lấy từ ván của người chơi hoàn hảo, chỉ tính thế có nước tồi để
             chọn nhầm. Thế hệ nào cũng làm cùng bộ đề này.
           </p>
           <p>
-            Sau {last.gen} thế hệ, sai số khi đoán trước kết quả giảm từ {first.value_mae.toFixed(1)} xuống{' '}
-            <strong>{last.value_mae.toFixed(1)} điểm</strong>. Đấu với người chơi hoàn hảo, mỗi ván mất trung bình{' '}
-            {(-first.vs_perfect_margin).toFixed(2)} điểm lúc chưa học, còn{' '}
-            <strong>{(-last.vs_perfect_margin).toFixed(2)}</strong> sau khi học.
+            Sau {last.gen} thế hệ, sai số khi đoán trước kết quả giảm từ {num(+first.value_mae.toFixed(1))} xuống{' '}
+            <strong>{num(+last.value_mae.toFixed(1))} điểm</strong>. Đấu với người chơi hoàn hảo, mỗi ván mất trung bình{' '}
+            {num(+(-first.vs_perfect_margin).toFixed(2))} điểm lúc chưa học, còn{' '}
+            <strong>{num(+(-last.vs_perfect_margin).toFixed(2))}</strong> sau khi học.
           </p>
         </div>
         <BeforeAfter
@@ -132,14 +132,14 @@ export function Lab() {
               label: 'Sai số đoán điểm còn lại (thấp hơn là tốt)',
               before: first.value_mae,
               after: last.value_mae,
-              format: (x) => `${x.toFixed(1)} đ`,
+              format: (x) => `${num(+x.toFixed(1))} đ`,
               max: Math.ceil(first.value_mae),
             },
             {
               label: 'Điểm mất mỗi ván so với chơi hoàn hảo (thấp hơn là tốt)',
               before: -first.vs_perfect_margin,
               after: -last.vs_perfect_margin,
-              format: (x) => `${x.toFixed(2)} đ`,
+              format: (x) => `${num(+x.toFixed(2))} đ`,
               max: Math.ceil(-first.vs_perfect_margin),
             },
           ]}

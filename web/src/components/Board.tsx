@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { ringSize, type Variant } from '../engine/rules'
 
 // Bàn vẽ như kẻ phấn trên sân: hai hàng ô dân, hai đầu là ô quan hình bán nguyệt.
@@ -24,6 +24,8 @@ interface Props {
   onMove: (a: number) => void
   thought: Thought | null // MCTS của AI (người 1)
   lastAction: { player: number; a: number } | null
+  selected: number | null
+  onSelect: (i: number | null) => void
 }
 
 function cellCenter(idx: number, s: number): [number, number] {
@@ -49,11 +51,10 @@ function pebbleSpots(idx: number, count: number, spread: number) {
   return out
 }
 
-export function Board({ v, st, hand, flash, playable, onMove, thought, lastAction }: Props) {
+export function Board({ v, st, hand, flash, playable, onMove, thought, lastAction, selected, onSelect }: Props) {
   const s = v.squares
   const n = ringSize(v)
   const w = (X1 - X0) / s
-  const [selected, setSelected] = useState<number | null>(null)
 
   const totalVisits = useMemo(() => (thought ? thought.visits.reduce((a, b) => a + b, 0) : 0), [thought])
   const canPlay = playable.some(Boolean)
@@ -116,7 +117,7 @@ export function Board({ v, st, hand, flash, playable, onMove, thought, lastActio
         height={YB - YM - 6}
         rx={10}
         className={`cell-hit${ok ? ' playable' : ''}${selected === i ? ' selected' : ''}`}
-        onClick={() => ok && setSelected(selected === i ? null : i)}
+        onClick={() => ok && onSelect(selected === i ? null : i)}
       />,
     )
   }
@@ -161,19 +162,19 @@ export function Board({ v, st, hand, flash, playable, onMove, thought, lastActio
     const [cx] = cellCenter(1 + selected, s)
     const btn = (a: number, dx: number, label: string, title: string) => (
       <g
-        className="dir-btn"
+        className="dir-btn svg-only"
         role="button"
         tabIndex={0}
         aria-label={title}
         transform={`translate(${cx + dx} ${YB + 40})`}
         onClick={() => {
-          setSelected(null)
+          onSelect(null)
           onMove(a)
         }}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault()
-            setSelected(null)
+            onSelect(null)
             onMove(a)
           }
         }}

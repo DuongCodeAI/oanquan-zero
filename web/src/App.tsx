@@ -23,7 +23,7 @@ export default function App() {
       <p className="hero-sub">
         Nó chỉ được biết luật. Mình cho nó tự đánh với chính nó <strong>{num(T.games)} ván</strong> qua{' '}
         <strong>{T.gens} thế hệ</strong> ({num(T.games_per_gen)} ván mỗi thế hệ, mỗi nước MCTS thử {T.sims} nhánh), tổng
-        cộng <strong>{T.minutes} phút</strong> trên laptop Ryzen 5 5625U (6 nhân, 16 GB RAM, <strong>không GPU</strong>).
+        cộng <strong>{num(T.minutes)} phút</strong> trên laptop Ryzen 5 5625U (6 nhân, 16 GB RAM, <strong>không GPU</strong>).
         Bộ não của nó là một mạng {num(lab.params)} tham số. Mọi nước nó đi bên dưới được tính ngay trong trình duyệt của
         bạn; chấm đỏ là các nước nó đang cân nhắc.
       </p>

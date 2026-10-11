@@ -14,6 +14,7 @@ const LEVELS = [
   { sims: 50, label: 'Tính 50 nước giả định' },
   { sims: 200, label: 'Tính 200 nước giả định' },
   { sims: 800, label: 'Tính 800 nước giả định' },
+  { sims: 3200, label: 'Tính 3.200 nước giả định (thắng minimax 8 nước)' },
 ]
 
 function describe(a: number, player: number) {
@@ -32,7 +33,7 @@ const END_REASON: Record<string, string> = {
 export function Play() {
   const [manifest, setManifest] = useState<Manifest | null>(null)
   const [genIdx, setGenIdx] = useState(0)
-  const [level, setLevel] = useState(2)
+  const [level, setLevel] = useState(4)
   const [net, setNet] = useState<Net | null>(null)
   const [error, setError] = useState<string | null>(null)
 

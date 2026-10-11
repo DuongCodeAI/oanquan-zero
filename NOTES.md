@@ -121,3 +121,18 @@ không có quy luật đơn giản kiểu "đi trước luôn lợi".
      mà không mạnh lên trước một lối chơi khác. Đây là hiện tượng đã biết của self-play (không bắc cầu,
      non-transitive): thắng thế hệ trước không có nghĩa là mạnh hơn nói chung.
 - Bài học: luôn ghi sai số chuẩn; với kết quả cặp gần 50%, cần ~100 cặp mới thấy được chênh lệch cỡ 10 điểm %.
+
+## Thí nghiệm v2 (A/B) và tìm kiếm nhiều hơn
+- v2 = mạng 256 nơ-ron/lớp (163.595 tham số, gấp 3,3), target value = 0,5 · kết quả thật + 0,5 · giá trị MCTS ở gốc,
+  chỉ 6 nước đầu chọn ngẫu nhiên. Giữ nguyên mọi thứ khác so với lần 1 (800 ván, 200 lượt, 800 bước train/thế hệ),
+  chạy 30 thế hệ (~17 phút). MCTS với mạng 256 chậm hơn ~2,5 lần (5,2 ms so với 2,1 ms cho 200 lượt).
+- 100 cặp mỗi trận: v2 thế hệ 30 vs lần 1 thế hệ 30 = 0,605 ± 0,049; vs lần 1 thế hệ 100 = 0,575 ± 0,049. Nhưng
+  đấu minimax 8 nước: v2 0,325, lần 1 thế hệ 30 0,345. Ba thay đổi gộp chung (chưa tách riêng từng cái) làm AI
+  học nhanh hơn trong "thế giới self-play" nhưng không giúp trước một lối chơi khác.
+- Tìm kiếm nhiều hơn, cùng mạng lần 1 thế hệ 100, đấu minimax 8 nước (5.911 thế cờ/nước):
+  200 lượt 0,245 ± 0,043 · 800 lượt 0,485 ± 0,050 · **3.200 lượt 0,665 ± 0,047** (54-25-21).
+  Với khoảng nửa số thế cờ, MCTS có mạng đã thắng minimax 8 nước: mạng không đủ để thay tìm kiếm, nhưng làm tìm
+  kiếm hiệu quả hơn nhiều.
+- Trên trình duyệt (bản TypeScript): 200 lượt 31 ms, 800 lượt 92 ms, 3.200 lượt 305 ms mỗi nước. Web để mặc định
+  3.200 lượt.
+- Chưa làm: tách riêng tác dụng của từng thay đổi trong v2; train v2 lâu hơn; đo v2 với 3.200 lượt.

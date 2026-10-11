@@ -31,6 +31,10 @@ def make_player(spec: str, v, run: Path, sims: int):
         return GreedyPlayer(v)
     if spec.startswith("minimax"):
         return MinimaxPlayer(v, int(spec[7:]))
+    # "gen30@runs/standard_v2" = thế hệ 30 của một lần chạy khác (để so A/B)
+    if "@" in spec:
+        spec, other = spec.split("@")
+        run = Path(other)
     gen = int(spec[3:])
     cfg = json.loads((run / "config.json").read_text())
     net = PolicyValueNet(v.squares, hidden=cfg["hidden"])

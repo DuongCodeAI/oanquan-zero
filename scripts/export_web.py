@@ -203,6 +203,17 @@ def main():
                 lab["standard_vs"].append(
                     {"opponent": BASELINE_LABEL[opp], "before": b, "after": a, "pairs": min(nb, na)}
                 )
+    # tìm kiếm nhiều hơn: cùng thế hệ cuối, đổi số lượt MCTS, đấu minimax 8 nước (100 cặp mỗi mức)
+    pm_path = ROOT / "results/pair_matches.jsonl"
+    pm = read_log(pm_path) if pm_path.exists() else []
+    if elo:
+        last_gen = f"gen{lab['elo']['points'][-1]['gen']}"
+        by_sims = {m["sims"]: m for m in pm if m["a"] == last_gen and m["b"] == "minimax8"}
+        lab["search_scaling"] = [
+            {"sims": k, "pair_score": m["pair_score"], "se": m["se"], "wdl": [m["pair_win"], m["pair_draw"], m["pair_loss"]]}
+            for k, m in sorted(by_sims.items())
+        ]
+    lab["ab_v2"] = [m for m in pm if "@" in m["a"]]
     # câu chữ tóm tắt viết tay sau khi xem số, để trong results/web_text.json
     text_path = ROOT / "results/web_text.json"
     if text_path.exists():

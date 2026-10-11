@@ -166,3 +166,27 @@ export function BeforeAfter({ rows, beforeLabel, afterLabel }: { rows: Compare[]
     </div>
   )
 }
+
+/** Thanh ngang cho một chỉ số 0..1, có vạch 50% (hoà) để thấy ngay bên nào hơn. */
+export function ScoreBars({ rows }: { rows: { label: string; value: number; se: number; detail: string }[] }) {
+  return (
+    <div className="ba">
+      {rows.map((r) => (
+        <div key={r.label}>
+          <div className="ba-label">{r.label}</div>
+          <div className="ba-bar" title={r.detail}>
+            <span className="ba-name">{r.detail}</span>
+            <span className="ba-track score-track">
+              <i style={{ width: `${r.value * 100}%`, background: r.value > 0.5 ? 'var(--s1)' : 'var(--ba-before)' }} />
+              <em aria-hidden="true" />
+            </span>
+            <b>
+              {Math.round(r.value * 100)}% ±{Math.round(r.se * 100)}
+            </b>
+          </div>
+        </div>
+      ))}
+      <p className="hint">Vạch giữa = 50%, tức ngang nhau. ± là sai số chuẩn.</p>
+    </div>
+  )
+}

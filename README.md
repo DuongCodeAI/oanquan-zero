@@ -19,8 +19,10 @@ người. Luật chơi, solver, MCTS, vòng train và bản web đều tự vi�
 > evaluation against ground truth: I shrank the board until an exact solver could solve every reachable position
 > (82,885 positions for 3 pits × 2 stones), then measured how often the agent picks a provably optimal move on a fixed
 > test set: 37% → 85% for the raw policy, 77% → 92% with 160-simulation MCTS. On the full board there is no ground
-> truth, so I use pair-based Elo against minimax baselines: the agent beats greedy and 4-ply minimax but still loses to
-> 8-ply minimax, which examines ~30x more positions per move (details, and two wrong conclusions I corrected, below). The web demo runs a TypeScript port that is tested move-for-move against Python.
+> truth, so I use pair-based Elo against minimax baselines: at 200 simulations the agent beats greedy and 4-ply minimax
+> but loses to 8-ply minimax, which examines ~30x more positions per move; with 3,200 simulations (about half of
+> minimax's positions) the same network beats it 0.665 ± 0.047 over 100 game pairs. Two wrong conclusions I made and
+> corrected along the way are documented below. The web demo runs a TypeScript port that is tested move-for-move against Python.
 
 ## Kết quả chính
 
@@ -68,8 +70,16 @@ Trước và sau train, cùng MCTS 200 lượt, chỉ khác trọng số (100 c�
 | minimax 4 nước | 0,31 | **0,765** (71 - 11 - 18) |
 | minimax 8 nước | 0,055 | **0,245** (15 - 19 - 66) |
 
-AI thắng đậm đi ngẫu nhiên, tham ăn và minimax 4 nước, nhưng **vẫn thua minimax 8 nước**, đối thủ xét nhiều thế cờ
-hơn nó ~30 lần mỗi nước.
+Với 200 lượt MCTS, AI thắng đậm đi ngẫu nhiên, tham ăn và minimax 4 nước, nhưng thua minimax 8 nước, đối thủ xét
+nhiều thế cờ hơn nó ~30 lần mỗi nước. **Cho cùng mạng đó tìm kiếm nhiều hơn thì thắng** (100 cặp mỗi mức):
+
+| thế hệ 100 vs minimax 8 nước | thế cờ xét / nước | cặp thắng - hoà - thua | điểm cặp |
+|---|---|---|---|
+| MCTS 200 lượt | 200 (≈ 1/30 minimax 8) | 15 - 19 - 66 | 0,245 ± 0,043 |
+| MCTS 800 lượt | 800 (≈ 1/7) | 34 - 29 - 37 | 0,485 ± 0,050 |
+| **MCTS 3.200 lượt** | 3.200 (≈ 1/2) | **54 - 25 - 21** | **0,665 ± 0,047** |
+
+3.200 lượt mất ~0,3 s mỗi nước trên trình duyệt; đó là mức mặc định của web demo.
 
 ## Cách làm
 
@@ -125,10 +135,17 @@ Trên đường đi mình kết luận sai hai lần, ghi lại vì đó là ph�
    (50 lượt) thành +1,8 điểm/ván (40 ván): tìm kiếm thêm có giúp.
 2. *Đã đo:* **self-play không bắc cầu.** Thế hệ 100 thắng thế hệ 40 rõ ràng nhưng đấu minimax 8 thì ngang thế hệ 40.
    Dữ liệu tự đánh chỉ dạy AI đối phó với chính nó.
-3. *Giả thuyết, đang kiểm tra:* mạng 49k tham số không đủ sức chứa; mục tiêu value (kết quả 1 ván) nhiễu; 12 nước đầu
-   chọn ngẫu nhiên khi tự đánh là gần nửa ván 29 nước. Đang chạy thí nghiệm A/B "v2": mạng 164k tham số, value =
-   trung bình kết quả thật và đánh giá MCTS, chỉ 6 nước đầu ngẫu nhiên; so thế hệ 30 của v2 với thế hệ 30 của lần 1,
-   cùng số ván, cùng số lượt MCTS.
+3. *Đã đo (A/B):* **mạng to hơn không phải lời giải.** Thí nghiệm "v2": mạng 164k tham số (gấp 3), target value =
+   trung bình kết quả thật và đánh giá MCTS ở gốc, chỉ 6 nước đầu chọn ngẫu nhiên (thay vì 12, gần nửa ván 29 nước).
+   Cùng 30 thế hệ × 800 ván × 200 lượt như lần 1 (17 phút). Kết quả 100 cặp mỗi trận:
+   | trận | điểm cặp |
+   |---|---|
+   | v2 thế hệ 30 vs lần 1 thế hệ 30 | **0,605 ± 0,049** |
+   | v2 thế hệ 30 vs lần 1 thế hệ 100 | 0,575 ± 0,049 |
+   | v2 thế hệ 30 vs minimax 8 nước | 0,325 ± 0,047 |
+   | lần 1 thế hệ 30 vs minimax 8 nước | 0,345 ± 0,048 |
+   v2 học nhanh hơn khi so với chính dòng AI này, nhưng trước minimax 8 nước thì không khá hơn. Cộng với bảng "tìm
+   kiếm nhiều hơn" ở trên: nút thắt là **độ sâu tìm kiếm**, không phải mạng. Web vẫn dùng mạng lần 1 (nhỏ hơn, đủ dùng).
 
 Chi tiết từng bước, kể cả những lần đoán sai: [NOTES.md](NOTES.md).
 

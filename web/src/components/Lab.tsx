@@ -1,5 +1,5 @@
 import labJson from '../data/lab.json'
-import { BeforeAfter, LineChart } from './Charts'
+import { BeforeAfter, LineChart, ScoreBars } from './Charts'
 
 interface TrainSummary {
   variant: string
@@ -33,6 +33,8 @@ interface LabData {
   learning: { squares: number; stones: number; states: number }
   elo: { points: { gen: number; elo: number }[]; baselines: { label: string; elo: number }[]; note: string }
   standard_vs: { opponent: string; before: number; after: number; pairs: number }[]
+  search_scaling: { sims: number; pair_score: number; se: number; wdl: [number, number, number] }[]
+  ab_v2: { a: string; b: string; pair_score: number; se: number; pair_win: number; pair_draw: number; pair_loss: number }[]
   notes: { title: string; body: string }[]
 }
 
@@ -213,6 +215,35 @@ export function Lab() {
             beforeLabel="Trước train"
             afterLabel={`Thế hệ ${best.gen}`}
             rows={lab.standard_vs.map((r) => ({ label: `với ${r.opponent}`, before: r.before, after: r.after, format: pct, max: 1 }))}
+          />
+        </div>
+      )}
+
+      {lab.search_scaling.length > 0 && (
+        <div className="finding">
+          <div>
+            <div className="kicker">Cho nó nghĩ lâu hơn</div>
+            <h3>Cùng một bộ não, tìm kiếm nhiều hơn thì thắng được minimax 8 nước</h3>
+            <p>
+              Minimax 8 nước xét <strong>5.911 thế cờ</strong> cho mỗi nước đi. Với 200 lượt MCTS, AI chỉ xét 200 thế,
+              ít hơn khoảng 30 lần, và thua. Giữ nguyên mạng thế hệ {best.gen}, chỉ tăng số lượt tìm kiếm: 800 lượt thì
+              ngang, <strong>3.200 lượt (khoảng nửa số thế cờ của minimax) thì thắng</strong>.
+            </p>
+            <p>
+              Mình cũng thử một mạng lớn gấp 3 (164 nghìn tham số) với mục tiêu value ít nhiễu hơn: sau 30 thế hệ nó thắng
+              bản cũ cùng tuổi{' '}
+              {lab.ab_v2.find((m) => m.b === 'gen30') ? `${Math.round(lab.ab_v2.find((m) => m.b === 'gen30')!.pair_score * 100)}%` : ''}{' '}
+              số cặp ván, nhưng đấu minimax 8 nước thì không khá hơn. Nút thắt là độ sâu tìm kiếm, không phải mạng. Mức
+              3.200 lượt là mức mặc định khi bạn chơi ở trên (khoảng 0,3 giây mỗi nước trên trình duyệt).
+            </p>
+          </div>
+          <ScoreBars
+            rows={lab.search_scaling.map((r) => ({
+              label: `MCTS ${num(r.sims)} lượt mỗi nước`,
+              value: r.pair_score,
+              se: r.se,
+              detail: `${r.wdl[0]}-${r.wdl[1]}-${r.wdl[2]}`,
+            }))}
           />
         </div>
       )}

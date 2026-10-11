@@ -474,7 +474,7 @@ button.btn:disabled {
 }
 .ba-bar {
   display: grid;
-  grid-template-columns: 92px minmax(0, 1fr) 64px;
+  grid-template-columns: 92px minmax(0, 1fr) 72px;
   align-items: center;
   gap: 10px;
   font-size: 13px;
@@ -487,6 +487,17 @@ button.btn:disabled {
   height: 14px;
   background: var(--paper-2);
   border-radius: 0 4px 4px 0;
+}
+.score-track {
+  position: relative;
+}
+.score-track em {
+  position: absolute;
+  left: 50%;
+  top: -3px;
+  bottom: -3px;
+  width: 2px;
+  background: var(--ink);
 }
 .ba-track i {
   display: block;

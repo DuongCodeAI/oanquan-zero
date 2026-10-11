@@ -515,7 +515,7 @@
     "elo": 1516.6977678752196
    }
   ],
-  "note": "AI thắng đậm người đi ngẫu nhiên, tham ăn và minimax 4 nước, nhưng vẫn thua minimax 8 nước (100 cặp ván: thắng 15, hoà 19, thua 66). Minimax 8 nước xét 5.911 thế cờ cho mỗi nước đi, AI chỉ xét 200, ít hơn khoảng 30 lần. Lần train thứ 2 (thế hệ 81-100, 400 lượt MCTS, 20.000 ván) không tạo khác biệt đo được so với thế hệ 80."
+  "note": "Với 200 lượt MCTS mỗi nước, AI thắng đậm người đi ngẫu nhiên, tham ăn và minimax 4 nước, nhưng thua minimax 8 nước (100 cặp ván: 15 thắng, 19 hoà, 66 thua), đối thủ xét nhiều thế cờ hơn nó khoảng 30 lần. Lần train thứ 2 (thế hệ 81-100, 400 lượt, 20.000 ván) không tạo khác biệt đo được so với thế hệ 80. Cho nó tìm kiếm nhiều hơn thì khác: xem mục ngay dưới."
  },
  "standard_vs": [
   {
@@ -533,7 +533,7 @@
   {
    "opponent": "minimax 8 nước",
    "before": 0.055,
-   "after": 0.245,
+   "after": 0.665,
    "pairs": 100
   }
  ],
@@ -557,6 +557,79 @@
   {
    "title": "40 cặp ván là quá ít để kết luận",
    "body": "Với 40 cặp mình kết luận AI 'chững lại từ thế hệ 40'. Đo lại 100 cặp: thế hệ 100 thắng thế hệ 40 với 0,73 ± 0,04. Kết luận đúng: AI vẫn tiến bộ khi đấu phiên bản cũ của nó, nhưng không tiến bộ khi đấu minimax 8 nước (self-play không bắc cầu)."
+  }
+ ],
+ "search_scaling": [
+  {
+   "sims": 200,
+   "pair_score": 0.245,
+   "se": 0.04300872004605578,
+   "wdl": [
+    15,
+    19,
+    66
+   ]
+  },
+  {
+   "sims": 800,
+   "pair_score": 0.485,
+   "se": 0.04997749493522059,
+   "wdl": [
+    34,
+    29,
+    37
+   ]
+  },
+  {
+   "sims": 3200,
+   "pair_score": 0.665,
+   "se": 0.04719904660054057,
+   "wdl": [
+    54,
+    25,
+    21
+   ]
+  }
+ ],
+ "ab_v2": [
+  {
+   "run": "runs/standard",
+   "a": "gen30@runs/standard_v2",
+   "b": "gen30",
+   "sims": 200,
+   "pairs": 100,
+   "pair_win": 52,
+   "pair_draw": 17,
+   "pair_loss": 31,
+   "pair_score": 0.605,
+   "se": 0.048885069295235735,
+   "margin": 0.9600000000000002
+  },
+  {
+   "run": "runs/standard",
+   "a": "gen30@runs/standard_v2",
+   "b": "minimax8",
+   "sims": 200,
+   "pairs": 100,
+   "pair_win": 28,
+   "pair_draw": 9,
+   "pair_loss": 63,
+   "pair_score": 0.325,
+   "se": 0.04683748498798799,
+   "margin": -3.995
+  },
+  {
+   "run": "runs/standard",
+   "a": "gen30@runs/standard_v2",
+   "b": "gen100",
+   "sims": 200,
+   "pairs": 100,
+   "pair_win": 47,
+   "pair_draw": 21,
+   "pair_loss": 32,
+   "pair_score": 0.575,
+   "se": 0.04943429983321297,
+   "margin": 0.515
   }
  ]
 }

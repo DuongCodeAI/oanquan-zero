@@ -1,0 +1,3 @@
+{
+ "elo_note": "AI thắng đậm người đi ngẫu nhiên, tham ăn và minimax 4 nước, nhưng vẫn thua minimax 8 nước (100 cặp ván: thắng 15, hoà 19, thua 66). Minimax 8 nước xét 5.911 thế cờ cho mỗi nước đi, AI chỉ xét 200, ít hơn khoảng 30 lần. Lần train thứ 2 (thế hệ 81-100, 400 lượt MCTS, 20.000 ván) không tạo khác biệt đo được so với thế hệ 80."
+}

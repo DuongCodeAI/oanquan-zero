@@ -1,0 +1,15 @@
+{
+  "variant": "S5P5Q10",
+  "gens": 80,
+  "games": 800,
+  "sims": 200,
+  "workers": 6,
+  "keep": 8,
+  "steps": 800,
+  "batch": 256,
+  "lr": 0.001,
+  "hidden": 128,
+  "solution": null,
+  "seed": 0,
+  "out": "runs/standard"
+}

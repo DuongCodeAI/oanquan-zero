@@ -10,19 +10,38 @@
   "games_per_gen": 400,
   "steps": 300,
   "batch": 256,
-  "hidden": 128
+  "hidden": 128,
+  "phases": [
+   {
+    "gens": 40,
+    "games": 400,
+    "sims": 160
+   }
+  ]
  },
  "train_standard": {
   "variant": "S5P5Q10",
-  "gens": 59,
-  "games": 47200,
-  "positions": 1294803,
-  "sims": 200,
-  "minutes": 17.9,
-  "games_per_gen": 800,
+  "gens": 100,
+  "games": 84000,
+  "positions": 2359878,
+  "sims": 400,
+  "minutes": 36.8,
+  "games_per_gen": 1000,
   "steps": 800,
   "batch": 256,
-  "hidden": 128
+  "hidden": 128,
+  "phases": [
+   {
+    "gens": 80,
+    "games": 800,
+    "sims": 200
+   },
+   {
+    "gens": 20,
+    "games": 1000,
+    "sims": 400
+   }
+  ]
  },
  "eval_small": {
   "variant": "S3P2Q4",
@@ -460,23 +479,84 @@
   ]
  },
  "elo": {
-  "points": [],
-  "baselines": [],
-  "note": ""
+  "points": [
+   {
+    "gen": 0,
+    "elo": 1041.8059298239618
+   },
+   {
+    "gen": 10,
+    "elo": 1324.3651512916192
+   },
+   {
+    "gen": 40,
+    "elo": 1375.8053856616286
+   },
+   {
+    "gen": 100,
+    "elo": 1417.4159980631462
+   }
+  ],
+  "baselines": [
+   {
+    "label": "đi ngẫu nhiên",
+    "elo": 0.0
+   },
+   {
+    "label": "tham ăn",
+    "elo": 496.9405684562679
+   },
+   {
+    "label": "minimax 4 nước",
+    "elo": 1175.7615740660426
+   },
+   {
+    "label": "minimax 8 nước",
+    "elo": 1516.6977678752196
+   }
+  ],
+  "note": "AI thắng đậm người đi ngẫu nhiên, tham ăn và minimax 4 nước, nhưng vẫn thua minimax 8 nước (100 cặp ván: thắng 15, hoà 19, thua 66). Minimax 8 nước xét 5.911 thế cờ cho mỗi nước đi, AI chỉ xét 200, ít hơn khoảng 30 lần. Lần train thứ 2 (thế hệ 81-100, 400 lượt MCTS, 20.000 ván) không tạo khác biệt đo được so với thế hệ 80."
  },
- "standard_vs": [],
+ "standard_vs": [
+  {
+   "opponent": "tham ăn",
+   "before": 0.94,
+   "after": 0.985,
+   "pairs": 100
+  },
+  {
+   "opponent": "minimax 4 nước",
+   "before": 0.31,
+   "after": 0.765,
+   "pairs": 100
+  },
+  {
+   "opponent": "minimax 8 nước",
+   "before": 0.055,
+   "after": 0.245,
+   "pairs": 100
+  }
+ ],
  "notes": [
   {
    "title": "Luật vay dân làm dân sinh ra từ hư không",
    "body": "Lúc đầu mình cho điểm âm thoải mái khi phải vay để rải. Kết quả: có ván rải 47 lần, bàn cờ nhiều dân hơn tổng số dân, solver không bao giờ hội tụ. Sửa bằng luật: kho hai bên cộng lại không đủ thì ván dừng."
   },
   {
-   "title": "Đoán sai nguyên nhân hai lần",
-   "body": "Một nhúm thế cờ (0,09% ở bàn 3 × 2) có giá trị dao động mãi. Mình đoán do hết quan, rồi đoán do ăn qua ăn lại; kiểm tra thì cả hai đều sai. Thật ra là vòng 8 nước không ăn quân nào. Các thế đó bị loại khỏi phép đo."
+   "title": "Đoán sai nguyên nhân ba lần",
+   "body": "0,09% thế cờ ở bàn 3 × 2 có giá trị dao động mãi. Mình đoán do hết quan: sai. Đoán do ăn qua ăn lại: sai. Tìm được một vòng 8 nước không ăn quân thì kết luận luôn; viết test cho cả 78 thế thì test đỏ. Câu đúng: 8 vòng 8 nước không ăn quân, cộng 14 thế dẫn vào vòng. Các thế đó bị loại khỏi phép đo."
   },
   {
    "title": "Con số 95% đầu tiên bị thổi phồng",
    "body": "Lúc đầu mình chấm AI trên chính các thế nó gặp khi tự đánh: 95% đúng. Nhưng mỗi thế hệ lại được chấm trên bộ đề khác, và là bộ đề nó quen. Chấm lại trên một bộ cố định lấy từ ván của người chơi hoàn hảo thì còn 85%. Mọi biểu đồ trên trang dùng bộ cố định."
+  },
+  {
+   "title": "Ai đi trước thì thắng, nên tỉ lệ thắng từng ván vô dụng",
+   "body": "Ở bàn chuẩn người đi trước thắng 77-90% số ván, nên trận nào tính từng ván cũng ra ~50%: minimax 8 nước đấu minimax 2 nước chỉ 'thắng 69%', nhưng tính theo cặp ván (cùng khai cuộc, đổi bên) thì thắng 40/40. Mình đã train thêm một lượt trước khi nhận ra. Giờ mọi số đều tính theo cặp."
+  },
+  {
+   "title": "40 cặp ván là quá ít để kết luận",
+   "body": "Với 40 cặp mình kết luận AI 'chững lại từ thế hệ 40'. Đo lại 100 cặp: thế hệ 100 thắng thế hệ 40 với 0,73 ± 0,04. Kết luận đúng: AI vẫn tiến bộ khi đấu phiên bản cũ của nó, nhưng không tiến bộ khi đấu minimax 8 nước (self-play không bắc cầu)."
   }
  ]
 }

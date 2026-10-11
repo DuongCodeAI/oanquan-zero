@@ -7,3 +7,5 @@ results/solved/*.npz
 web/node_modules/
 web/dist/
 .vercel
+runs_*.log
+results/*.log

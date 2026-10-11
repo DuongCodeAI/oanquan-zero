@@ -1,0 +1,9 @@
+{"run": "runs/standard", "a": "gen100", "b": "gen40", "sims": 200, "pairs": 100, "pair_win": 69, "pair_draw": 8, "pair_loss": 23, "pair_score": 0.73, "se": 0.044395945760846225, "margin": 1.89}
+{"run": "runs/standard", "a": "gen100", "b": "gen80", "sims": 200, "pairs": 100, "pair_win": 43, "pair_draw": 23, "pair_loss": 34, "pair_score": 0.545, "se": 0.04979708826829135, "margin": -0.24999999999999994}
+{"run": "runs/standard", "a": "gen100", "b": "minimax8", "sims": 200, "pairs": 100, "pair_win": 15, "pair_draw": 19, "pair_loss": 66, "pair_score": 0.245, "se": 0.04300872004605578, "margin": -2.88}
+{"run": "runs/standard", "a": "gen40", "b": "minimax8", "sims": 200, "pairs": 100, "pair_win": 18, "pair_draw": 15, "pair_loss": 67, "pair_score": 0.255, "se": 0.04358612164439502, "margin": -2.875}
+{"run": "runs/standard", "a": "gen0", "b": "greedy", "sims": 200, "pairs": 100, "pair_win": 88, "pair_draw": 12, "pair_loss": 0, "pair_score": 0.94, "se": 0.023748684174075843, "margin": 18.68}
+{"run": "runs/standard", "a": "gen0", "b": "minimax4", "sims": 200, "pairs": 100, "pair_win": 25, "pair_draw": 12, "pair_loss": 63, "pair_score": 0.31, "se": 0.04624932431938871, "margin": -3.1599999999999997}
+{"run": "runs/standard", "a": "gen0", "b": "minimax8", "sims": 200, "pairs": 100, "pair_win": 0, "pair_draw": 11, "pair_loss": 89, "pair_score": 0.055, "se": 0.022798026230355997, "margin": -9.985}
+{"run": "runs/standard", "a": "gen100", "b": "greedy", "sims": 200, "pairs": 100, "pair_win": 97, "pair_draw": 3, "pair_loss": 0, "pair_score": 0.985, "se": 0.012155245781143223, "margin": 18.770000000000003}
+{"run": "runs/standard", "a": "gen100", "b": "minimax4", "sims": 200, "pairs": 100, "pair_win": 71, "pair_draw": 11, "pair_loss": 18, "pair_score": 0.765, "se": 0.04239988207530771, "margin": 5.2700000000000005}

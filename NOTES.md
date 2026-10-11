@@ -83,3 +83,41 @@ không có quy luật đơn giản kiểu "đi trước luôn lợi".
 - Forward numba khớp PyTorch tới 1e-8. Bản TypeScript trên web khớp bản Python: luật trên 120 ván ngẫu nhiên (3
   biến thể), logits sai < 1e-4, số lượt thăm MCTS 64 lượt trùng hoàn toàn trên 40 thế thử.
 - Lỗi vặt: numba từ chối `x @ W` vì `np.maximum(…, 0.0)` đẩy float32 lên float64; phải dùng `np.float32(0.0)`.
+
+## Lỗi 3: thước đo "tỉ lệ thắng từng ván" hỏng ở bàn chuẩn, che mất chuyện AI đã chững lại
+- Sau 80 thế hệ, mình cho train tiếp giai đoạn 2 (400 lượt mô phỏng, 1.000 ván/thế hệ, lr 5e-4). Kiểm tra sớm ở
+  thế hệ 90 bằng tỉ lệ thắng từng ván: thế hệ 80 thắng thế hệ 40 được 55%, thế hệ 90 hoà thế hệ 80 50%, đấu
+  minimax nhìn trước 8 nước 41-50%. Lạ hơn: minimax 8 nước đấu minimax 6 nước cũng chỉ 54%.
+- Nguyên nhân: bàn chuẩn có **lợi thế đi trước rất lớn**. Trong mọi trận đo, người đi trước thắng 77-90% số ván.
+  Mỗi cặp ván đổi bên nên thường là 1-1, bất kể ai mạnh hơn. Minimax 8 nước đấu 2 nước: tính từng ván thắng 69%,
+  tính theo cặp (cộng chênh lệch điểm của 2 ván cùng khai cuộc) thắng **40/40 cặp**.
+- Đo lại theo cặp (40 cặp mỗi trận):
+  | trận | cặp thắng-hoà-thua |
+  |---|---|
+  | thế hệ 0 (chưa học) vs minimax 8 | 0-4-36 |
+  | thế hệ 90 vs minimax 8 | 8-8-24 |
+  | thế hệ 90 vs thế hệ 40 | 15-6-19 |
+  | minimax 8 vs minimax 6 | 18-15-7 |
+  Lúc đó mình kết luận AI "chững lại từ khoảng thế hệ 40" và dừng giai đoạn 2 ở thế hệ 100. Kết luận này sai một
+  nửa, xem lỗi 4.
+- Sửa thước đo: `match()` trả thêm kết quả theo cặp, Elo tính trên cặp. Bài học: chọn thước đo phải hiểu cấu trúc
+  của trò chơi; tỉ lệ thắng từng ván là thước đo mặc định nhưng ở đây nó gần như chỉ đo "ai đi trước".
+
+## Lỗi 4: kết luận từ 20-40 cặp ván là quá ít
+- Giải Elo nhanh (20 cặp mỗi trận) cho thế hệ 100 thắng thế hệ 40 tới 11-6-3, ngược với 15-6-19 (thế hệ 90 vs 40,
+  40 cặp) ở trên. Hai lần đo mâu thuẫn nhau, nên mình đo lại mỗi trận **100 cặp** (`scripts/pair_match.py`), kèm
+  sai số chuẩn:
+  | trận (MCTS 200 lượt) | cặp thắng-hoà-thua | điểm cặp ± sai số chuẩn | cách biệt điểm/ván |
+  |---|---|---|---|
+  | thế hệ 100 vs thế hệ 40 | 69-8-23 | **0,73 ± 0,04** | +1,9 |
+  | thế hệ 100 vs thế hệ 80 | 43-23-34 | 0,55 ± 0,05 | −0,3 |
+  | thế hệ 100 vs minimax 8 nước | 15-19-66 | 0,25 ± 0,04 | −2,9 |
+  | thế hệ 40 vs minimax 8 nước | 18-15-67 | 0,26 ± 0,04 | −2,9 |
+- Kết luận đúng:
+  1. Từ thế hệ 40 tới 100 AI **có mạnh lên thật** khi đấu với chính các phiên bản cũ (0,73, cách 0,5 hơn 5 lần sai
+     số chuẩn). "Chững lại từ thế hệ 40" là sai, do mẫu nhỏ.
+  2. Lần train 2 (80 → 100) **không có khác biệt đo được** (0,55 ± 0,05).
+  3. Đấu minimax 8 nước thì thế hệ 40 và 100 như nhau (~0,25): AI mạnh lên kiểu "chuyên trị phiên bản cũ của mình"
+     mà không mạnh lên trước một lối chơi khác. Đây là hiện tượng đã biết của self-play (không bắc cầu,
+     non-transitive): thắng thế hệ trước không có nghĩa là mạnh hơn nói chung.
+- Bài học: luôn ghi sai số chuẩn; với kết quả cặp gần 50%, cần ~100 cặp mới thấy được chênh lệch cỡ 10 điểm %.

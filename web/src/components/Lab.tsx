@@ -12,6 +12,7 @@ interface TrainSummary {
   steps: number
   batch: number
   hidden: number
+  phases: { gens: number; games: number; sims: number }[]
 }
 
 interface EvalRow {
@@ -31,7 +32,7 @@ interface LabData {
   eval_small: { variant: string; sims: number; positions: number; rows: EvalRow[] }
   learning: { squares: number; stones: number; states: number }
   elo: { points: { gen: number; elo: number }[]; baselines: { label: string; elo: number }[]; note: string }
-  standard_vs: { opponent: string; before: number; after: number }[]
+  standard_vs: { opponent: string; before: number; after: number; pairs: number }[]
   notes: { title: string; body: string }[]
 }
 
@@ -64,8 +65,8 @@ export function Lab() {
       <ol className="loop">
         <li>
           <b>Tự đánh</b>
-          Mạng hiện tại tự chơi {num(tb.games_per_gen)} ván. Mỗi nước, cây tìm kiếm MCTS thử {tb.sims} nhánh giả định rồi
-          chọn nước được thăm nhiều nhất.
+          Mạng hiện tại tự chơi {num(tb.phases[0].games)} ván. Mỗi nước, cây tìm kiếm MCTS thử {tb.phases[0].sims} nhánh
+          giả định rồi chọn nước được thăm nhiều nhất.
         </li>
         <li>
           <b>Ghi lại</b>
@@ -90,14 +91,14 @@ export function Lab() {
         </div>
         <div className="spec">
           <b>{num(tb.games)}</b>
-          <span>ván tự đánh trên bàn chuẩn, {tb.gens} thế hệ</span>
+          <span>ván tự đánh trên bàn chuẩn, {tb.gens} thế hệ, 2 lần train</span>
         </div>
         <div className="spec">
           <b>{num(tb.minutes)} phút</b>
           <span>tổng thời gian train bàn chuẩn</span>
         </div>
         <div className="spec">
-          <b>~3 ms</b>
+          <b>~2 ms</b>
           <span>một lần MCTS 200 lượt (numba)</span>
         </div>
       </div>
@@ -179,8 +180,9 @@ export function Lab() {
             </h3>
             <p>
               Bàn chuẩn không có đáp án, nên đo bằng đấu vòng tròn: các thế hệ đấu nhau và đấu với đối thủ viết tay,{' '}
-              <strong>tham ăn</strong> (luôn ăn nhiều nhất ngay) và <strong>minimax</strong> nhìn trước 2 đến 8 nước. Elo
-              ước lượng từ toàn bộ kết quả, mốc 0 là người đi ngẫu nhiên.
+              <strong>tham ăn</strong> (luôn ăn nhiều nhất ngay) và <strong>minimax</strong> nhìn trước 4 và 8 nước. Mỗi
+              trận tính theo cặp ván (cùng khai cuộc, đổi bên) vì người đi trước thắng tới 77-90% số ván. Elo ước lượng
+              từ toàn bộ kết quả, mốc 0 là người đi ngẫu nhiên.
             </p>
             {E.note && <p>{E.note}</p>}
           </div>
@@ -201,10 +203,10 @@ export function Lab() {
         <div className="finding">
           <div>
             <div className="kicker">Bàn chuẩn: trước và sau</div>
-            <h3>Tỉ lệ thắng trước các đối thủ viết tay</h3>
+            <h3>Tỉ lệ thắng cặp ván trước các đối thủ viết tay</h3>
             <p>
-              Cùng một AI với MCTS 200 lượt, chỉ khác bộ trọng số: thế hệ 0 (chưa học) và thế hệ cuối. Mỗi cặp đấu có đổi
-              bên đi trước, hoà tính nửa ván.
+              Cùng một AI với MCTS 200 lượt, chỉ khác bộ trọng số: thế hệ 0 (chưa học) và thế hệ cuối. Tỉ lệ tính theo
+              cặp ván ({lab.standard_vs[0]?.pairs ?? 0} cặp mỗi đối thủ), hoà tính nửa.
             </p>
           </div>
           <BeforeAfter

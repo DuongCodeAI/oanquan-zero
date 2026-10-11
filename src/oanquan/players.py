@@ -33,20 +33,23 @@ def _negamax(b, s, q, dan, depth, alpha, beta):
     order = np.argsort(-gains)
     best = -1e9
     best_a = -1
+    nodes = 1
     for k in range(2 * s):
         a = order[k]
         if not m[a]:
             continue
         val = gains[a]
         if not done[a] and depth > 1:
-            val -= _negamax(kids[a], s, q, dan, depth - 1, -beta + gains[a], -alpha + gains[a])[0]
+            cv, _, cn = _negamax(kids[a], s, q, dan, depth - 1, -beta + gains[a], -alpha + gains[a])
+            val -= cv
+            nodes += cn
         if val > best:
             best, best_a = val, a
         if best > alpha:
             alpha = best
         if alpha >= beta:
             break
-    return best, best_a
+    return best, best_a, nodes
 
 
 class Player:
@@ -82,6 +85,8 @@ class MinimaxPlayer(Player):
     def __init__(self, v: Variant, depth: int):
         self.v, self.depth = v, depth
         self.name = f"minimax{depth}"
+        self.nodes = 0  # tổng số thế cờ đã xét, để so "chi phí suy nghĩ" với MCTS
+        self.moves = 0
 
     def act(self, b, rng):
         v = self.v
@@ -95,8 +100,12 @@ class MinimaxPlayer(Player):
             st[: n + 2] = b
             g = step(st, int(a), s, v.quan, 1 << 30, v.dan)
             vals[a] = g
+            self.nodes += 1
             if st[n + 6] == 0 and self.depth > 1:
-                vals[a] -= _negamax(_child_board(st, n, s), s, v.quan, v.dan, self.depth - 1, -1e9, 1e9)[0]
+                cv, _, cn = _negamax(_child_board(st, n, s), s, v.quan, v.dan, self.depth - 1, -1e9, 1e9)
+                vals[a] -= cv
+                self.nodes += cn
+        self.moves += 1
         best = np.flatnonzero(vals == vals.max())
         return int(rng.choice(best))
 
@@ -154,22 +163,45 @@ def play_game(v: Variant, p0: Player, p1: Player, rng, opening_random: int = 0):
 
 
 def match(v: Variant, a: Player, b: Player, games: int, seed: int = 0, opening_random: int = 2):
-    """Đấu cặp, đổi bên đi trước mỗi ván. Trả về dict thắng/hoà/thua và chênh lệch trung bình theo góc nhìn a."""
+    """Đấu cặp, đổi bên đi trước mỗi ván, hai ván trong một cặp cùng khai cuộc ngẫu nhiên.
+
+    Trả về theo góc nhìn a:
+      win/draw/loss, score: tính từng ván.
+      pair_win/pair_draw/pair_loss, pair_score: tính theo cặp, cộng chênh lệch điểm của 2 ván. Bàn chuẩn có lợi thế
+        đi trước rất lớn (người đi trước thắng ~80% ván self-play) nên thắng/thua từng ván chủ yếu do ai đi trước;
+        tính theo cặp mới tách được ai mạnh hơn.
+      first_win: tỉ lệ ván người đi trước thắng.
+      margin: chênh lệch điểm trung bình mỗi ván.
+    """
     rng = np.random.default_rng(seed)
     w = d = lose = 0
-    margins = []
+    margins, first = [], []
     for g in range(games):
         if g % 2 == 0:
             pair_seed = int(rng.integers(1 << 62))
-        # hai ván trong một cặp dùng cùng seed nên cùng khai cuộc ngẫu nhiên, chỉ đổi bên
         game_rng = np.random.default_rng(pair_seed)
         if g % 2 == 0:
             m, _ = play_game(v, a, b, game_rng, opening_random)
+            first.append(m)
         else:
             m, _ = play_game(v, b, a, game_rng, opening_random)
+            first.append(m)
             m = -m
         margins.append(m)
         w += m > 0
         d += m == 0
         lose += m < 0
-    return {"win": w, "draw": d, "loss": lose, "margin": float(np.mean(margins)), "score": (w + 0.5 * d) / games}
+    pairs = np.array(margins[: len(margins) // 2 * 2]).reshape(-1, 2).sum(1)
+    pw, pd, pl = int((pairs > 0).sum()), int((pairs == 0).sum()), int((pairs < 0).sum())
+    return {
+        "win": w,
+        "draw": d,
+        "loss": lose,
+        "margin": float(np.mean(margins)),
+        "score": (w + 0.5 * d) / games,
+        "pair_win": pw,
+        "pair_draw": pd,
+        "pair_loss": pl,
+        "pair_score": (pw + 0.5 * pd) / max(1, len(pairs)),
+        "first_win": float(np.mean(np.array(first) > 0)),
+    }

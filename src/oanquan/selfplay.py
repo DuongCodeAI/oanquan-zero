@@ -17,18 +17,20 @@ class SelfPlayConfig:
     dir_alpha: float = 0.5
     dir_eps: float = 0.25
     temp_plies: int = 12  # mấy nước đầu chọn theo tỉ lệ lượt thăm, sau đó chọn nước thăm nhiều nhất
+    qmix: float = 0.0  # target value = (1 - qmix) * kết quả thật + qmix * giá trị MCTS ở gốc
 
 
 def play_one(v: Variant, w, cfg: SelfPlayConfig, rng: np.random.Generator):
     s, n = v.squares, v.n
     st = new_game(v)
-    boards, pis, gains = [], [], []
+    boards, pis, gains, roots = [], [], [], []
     while st[n + 6] == 0:
         b = canonical(st, s)
-        visits, _, _ = search(
+        visits, q, _ = search(
             b, s, v.stones, v.quan, v.dan, v.total, w, cfg.sims, cfg.c_puct, cfg.dir_alpha, cfg.dir_eps
         )
         pi = visits / visits.sum()
+        roots.append(float((pi * q).sum()))  # giá trị gốc theo MCTS, đã chia tổng điểm
         if st[n + 5] < cfg.temp_plies:
             a = int(rng.choice(len(pi), p=pi))
         else:
@@ -43,7 +45,10 @@ def play_one(v: Variant, w, cfg: SelfPlayConfig, rng: np.random.Generator):
         acc = gains[t] - acc
         z[t] = acc
     margin = int(st[n + 2] - st[n + 3])
-    return np.array(boards), np.array(pis), z / v.total, margin
+    z = z / v.total
+    if cfg.qmix > 0:
+        z = (1 - cfg.qmix) * z + cfg.qmix * np.array(roots, dtype=np.float32)
+    return np.array(boards), np.array(pis), z.astype(np.float32), margin
 
 
 def worker(args):

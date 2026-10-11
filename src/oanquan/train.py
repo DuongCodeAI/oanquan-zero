@@ -145,6 +145,8 @@ def main():
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--out", required=True)
     ap.add_argument("--resume", action="store_true", help="chạy tiếp từ checkpoint mới nhất trong --out")
+    ap.add_argument("--temp-plies", type=int, default=12, help="số nước đầu chọn ngẫu nhiên theo lượt thăm")
+    ap.add_argument("--qmix", type=float, default=0.0, help="trộn giá trị MCTS ở gốc vào target value")
     args = ap.parse_args()
 
     v = parse_variant(args.variant)
@@ -157,7 +159,7 @@ def main():
     sol = Solution.load(args.solution) if args.solution else None
     if sol is not None:
         uniform_idx = np.random.default_rng(123).choice(len(sol.keys), size=min(20000, len(sol.keys)), replace=False)
-    cfg = SelfPlayConfig(sims=args.sims)
+    cfg = SelfPlayConfig(sims=args.sims, temp_plies=args.temp_plies, qmix=args.qmix)
     buf = Buffer(args.keep)
     log = open(out / "log.jsonl", "a", encoding="utf-8")
 

@@ -17,7 +17,7 @@ def test_solver_matches_alpha_beta(v):
     rng = np.random.default_rng(0)
     for i in rng.choice(len(keys), size=min(150, len(keys)), replace=False):
         b = decode(np.int64(keys[i]), v.n, bits_for(v))
-        got, _ = _negamax(b, v.squares, v.quan, v.dan, iters + 2, -1e9, 1e9)
+        got, _, _ = _negamax(b, v.squares, v.quan, v.dan, iters + 2, -1e9, 1e9)
         assert got == val[i]
 
 

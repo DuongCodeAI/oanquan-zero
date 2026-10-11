@@ -1,0 +1,15 @@
+{
+  "variant": "S3P2Q4",
+  "gens": 40,
+  "games": 400,
+  "sims": 160,
+  "workers": 6,
+  "keep": 6,
+  "steps": 300,
+  "batch": 256,
+  "lr": 0.001,
+  "hidden": 128,
+  "solution": "results/solved/S3P2Q4.npz",
+  "seed": 0,
+  "out": "runs/S3P2Q4"
+}

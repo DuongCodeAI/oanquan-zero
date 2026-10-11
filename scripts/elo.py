@@ -2,8 +2,9 @@
 
     python scripts/elo.py runs/standard --gens 0 1 2 5 10 20 40 80 --games 40
 
-Mỗi cặp đấu `games` ván, đổi bên đi trước, hai ván trong một cặp có cùng 2 nước khai cuộc ngẫu nhiên.
-Mốc 0 = người đi ngẫu nhiên.
+Mỗi cặp người chơi đấu `games` ván = games/2 "cặp ván": cùng 2 nước khai cuộc ngẫu nhiên, đổi bên đi trước.
+Elo tính trên kết quả **cặp ván** (cộng chênh lệch điểm của 2 ván), không phải từng ván: bàn chuẩn có lợi thế đi
+trước rất lớn nên thắng/thua từng ván chủ yếu do ai đi trước (xem NOTES). Mốc 0 = người đi ngẫu nhiên.
 """
 
 from __future__ import annotations
@@ -51,7 +52,7 @@ def run_pair(args):
 
 
 def fit_elo(players: list[str], results: list[dict], anchor: str = "random") -> dict[str, float]:
-    """MLE Bradley-Terry trên điểm số (thắng 1, hoà 0.5). Prior Gauss sigma 1000 Elo để cặp thắng tuyệt đối
+    """MLE Bradley-Terry trên kết quả cặp ván (thắng 1, hoà 0.5). Prior Gauss sigma 1000 Elo để cặp thắng tuyệt đối
     không đẩy Elo ra vô hạn."""
     from scipy.optimize import minimize
 
@@ -59,8 +60,8 @@ def fit_elo(players: list[str], results: list[dict], anchor: str = "random") -> 
     k = np.log(10) / 400
     ia = np.array([idx[m["a"]] for m in results])
     ja = np.array([idx[m["b"]] for m in results])
-    S = np.array([m["win"] + 0.5 * m["draw"] for m in results], dtype=float)
-    N = np.array([m["win"] + m["draw"] + m["loss"] for m in results], dtype=float)
+    S = np.array([m["pair_win"] + 0.5 * m["pair_draw"] for m in results], dtype=float)
+    N = np.array([m["pair_win"] + m["pair_draw"] + m["pair_loss"] for m in results], dtype=float)
 
     def nll(r):
         d = k * (r[ia] - r[ja])
@@ -106,7 +107,7 @@ def main():
         results = []
         for r in pool.imap_unordered(run_pair, jobs):
             results.append(r)
-            wdl = f"{r['win']:>2}-{r['draw']}-{r['loss']:<2}"
+            wdl = f"cặp {r['pair_win']:>2}-{r['pair_draw']}-{r['pair_loss']:<2}"
             print(
                 f"  {r['a']:>9} vs {r['b']:<9} {wdl} cách biệt {r['margin']:+.1f}  ({r['seconds']}s)",
                 flush=True,

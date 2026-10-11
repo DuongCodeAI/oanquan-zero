@@ -5,37 +5,22 @@
   {
    "gen": 0,
    "file": "standard_gen000.bin",
-   "elo": null
-  },
-  {
-   "gen": 1,
-   "file": "standard_gen001.bin",
-   "elo": null
-  },
-  {
-   "gen": 2,
-   "file": "standard_gen002.bin",
-   "elo": null
-  },
-  {
-   "gen": 5,
-   "file": "standard_gen005.bin",
-   "elo": null
+   "elo": 1041.8059298239618
   },
   {
    "gen": 10,
    "file": "standard_gen010.bin",
-   "elo": null
-  },
-  {
-   "gen": 20,
-   "file": "standard_gen020.bin",
-   "elo": null
+   "elo": 1324.3651512916192
   },
   {
    "gen": 40,
    "file": "standard_gen040.bin",
-   "elo": null
+   "elo": 1375.8053856616286
+  },
+  {
+   "gen": 100,
+   "file": "standard_gen100.bin",
+   "elo": 1417.4159980631462
   }
  ]
 }

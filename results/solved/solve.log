@@ -5,3 +5,4 @@ S2P4Q8: 15,972 thế cờ, duyệt 0.4s, value iteration 18 vòng 0.0s, chưa x�
 S3P1Q2: 4,311 thế cờ, duyệt 0.2s, value iteration 16 vòng 0.0s, chưa xác định 0, giá trị thế đầu +10
 S3P3Q6: 585,052 thế cờ, duyệt 24.5s, value iteration 3000 vòng 401.7s, chưa xác định 386, giá trị thế đầu +4
 S4P1Q2: 96,021 thế cờ, duyệt 8.9s, value iteration 27 vòng 0.8s, chưa xác định 0, giá trị thế đầu -5
+S5P1Q2: 1,764,183 thế cờ, duyệt 184.2s, value iteration 3000 vòng 1638.4s, chưa xác định 20125, giá trị thế đầu +14

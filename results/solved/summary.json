@@ -136,5 +136,27 @@
    "6": -6,
    "7": -8
   }
+ },
+ "S5P1Q2": {
+  "squares": 5,
+  "stones": 1,
+  "quan": 2,
+  "total_points": 14,
+  "states": 1764183,
+  "unresolved": 20125,
+  "root_value": 14,
+  "root_unresolved": false,
+  "first_moves": {
+   "0": 14,
+   "1": 14,
+   "2": -2,
+   "3": -14,
+   "4": 14,
+   "5": 14,
+   "6": -14,
+   "7": -2,
+   "8": 14,
+   "9": 14
+  }
  }
 }

@@ -144,6 +144,7 @@ def main():
     ap.add_argument("--solution", default=None)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--resume", action="store_true", help="chạy tiếp từ checkpoint mới nhất trong --out")
     args = ap.parse_args()
 
     v = parse_variant(args.variant)
@@ -159,13 +160,26 @@ def main():
     cfg = SelfPlayConfig(sims=args.sims)
     buf = Buffer(args.keep)
     log = open(out / "log.jsonl", "a", encoding="utf-8")
-    (out / "config.json").write_text(json.dumps(vars(args), indent=2), encoding="utf-8")
 
     def save(gen):
         torch.save(net.state_dict(), out / "ckpt" / f"gen{gen:03d}.pt")
+        torch.save(opt.state_dict(), out / "ckpt" / "optimizer.pt")
 
-    save(0)
-    if sol is not None:
+    start = 0
+    if args.resume:
+        start = max(int(p.stem[3:]) for p in (out / "ckpt").glob("gen*.pt"))
+        net.load_state_dict(torch.load(out / "ckpt" / f"gen{start:03d}.pt"))
+        if (out / "ckpt" / "optimizer.pt").exists():
+            opt.load_state_dict(torch.load(out / "ckpt" / "optimizer.pt"))
+            for g in opt.param_groups:
+                g["lr"] = args.lr
+        # giữ config gốc (kích thước mạng...), cấu hình chạy tiếp lưu riêng
+        (out / f"config_resume_gen{start:03d}.json").write_text(json.dumps(vars(args), indent=2), encoding="utf-8")
+        print(f"chạy tiếp từ thế hệ {start}", flush=True)
+    else:
+        (out / "config.json").write_text(json.dumps(vars(args), indent=2), encoding="utf-8")
+        save(0)
+    if sol is not None and start == 0:
         rec = {"gen": 0, **eval_vs_solution(net, v, sol, uniform_idx, "all_")}
         print(json.dumps(rec, ensure_ascii=False))
         log.write(json.dumps(rec) + "\n")
@@ -173,7 +187,7 @@ def main():
 
     ctx = mp.get_context("spawn")
     with ctx.Pool(args.workers) as pool:
-        for gen in range(1, args.gens + 1):
+        for gen in range(start + 1, start + args.gens + 1):
             t0 = time.perf_counter()
             w = net.numpy_weights()
             per = [args.games // args.workers + (i < args.games % args.workers) for i in range(args.workers)]
@@ -193,6 +207,8 @@ def main():
                 "selfplay_s": round(t1 - t0, 1),
                 "train_s": round(time.perf_counter() - t1, 1),
                 "positions": int(len(z)),
+                "games": args.games,
+                "sims": args.sims,
                 "len_mean": float(lengths.mean()),
                 "first_player_margin": float(margins.mean()),
                 "first_player_win": float((margins > 0).mean()),

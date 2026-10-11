@@ -117,7 +117,7 @@ class Solution:
     reward: np.ndarray  # (M, A) chênh lệch điểm người đi kiếm được ngay trong nước đó
     value: np.ndarray  # (M,) giá trị tối ưu
     iters: int
-    unresolved: np.ndarray  # (M,) bool, thế trong chu trình có ăn quân, không có giá trị xác định
+    unresolved: np.ndarray  # (M,) bool, thế có giá trị dao động mãi (vòng lặp), không có giá trị xác định
 
     @property
     def bits(self) -> int:
@@ -179,9 +179,9 @@ def value_iteration(
 ):
     """Lặp Bellman từ 0. Trả về (value, số vòng, mask thế chưa hội tụ).
 
-    Một số ít thế nằm trong chu trình có ăn quân (ăn qua ăn lại rồi rải lại mãi): giá trị ván bị cắt sau t nước
-    dao động theo t, không có giới hạn. Những thế còn đổi giá trị trong `window` vòng cuối bị đánh dấu là chưa
-    xác định và loại khỏi mọi phép đo.
+    Một số ít thế nằm trên (hoặc dẫn vào) vòng lặp không ăn quân (3 × 2: các vòng 8 nước). Giá trị ván bị cắt
+    sau t nước dao động theo t (ai phải rời vòng phụ thuộc t), không có giới hạn. Những thế còn đổi giá trị trong
+    `window` vòng cuối bị đánh dấu là chưa xác định và loại khỏi mọi phép đo.
     """
     legal = succ != -2
     nxt = np.maximum(succ, 0)

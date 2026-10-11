@@ -1,0 +1,41 @@
+{
+ "variant": "S5P5Q10",
+ "hidden": 128,
+ "models": [
+  {
+   "gen": 0,
+   "file": "standard_gen000.bin",
+   "elo": null
+  },
+  {
+   "gen": 1,
+   "file": "standard_gen001.bin",
+   "elo": null
+  },
+  {
+   "gen": 2,
+   "file": "standard_gen002.bin",
+   "elo": null
+  },
+  {
+   "gen": 5,
+   "file": "standard_gen005.bin",
+   "elo": null
+  },
+  {
+   "gen": 10,
+   "file": "standard_gen010.bin",
+   "elo": null
+  },
+  {
+   "gen": 20,
+   "file": "standard_gen020.bin",
+   "elo": null
+  },
+  {
+   "gen": 40,
+   "file": "standard_gen040.bin",
+   "elo": null
+  }
+ ]
+}

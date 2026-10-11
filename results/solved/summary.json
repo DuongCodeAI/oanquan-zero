@@ -98,5 +98,43 @@
    "4": -14,
    "5": -4
   }
+ },
+ "S3P3Q6": {
+  "squares": 3,
+  "stones": 3,
+  "quan": 6,
+  "total_points": 30,
+  "states": 585052,
+  "unresolved": 386,
+  "root_value": 4,
+  "root_unresolved": false,
+  "first_moves": {
+   "0": -2,
+   "1": -4,
+   "2": 4,
+   "3": 4,
+   "4": -4,
+   "5": -2
+  }
+ },
+ "S4P1Q2": {
+  "squares": 4,
+  "stones": 1,
+  "quan": 2,
+  "total_points": 12,
+  "states": 96021,
+  "unresolved": 0,
+  "root_value": -5,
+  "root_unresolved": false,
+  "first_moves": {
+   "0": -8,
+   "1": -6,
+   "2": -8,
+   "3": -5,
+   "4": -5,
+   "5": -8,
+   "6": -6,
+   "7": -8
+  }
  }
 }

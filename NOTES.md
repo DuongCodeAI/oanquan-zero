@@ -40,3 +40,46 @@ Hai chỗ luật gốc không nói, phải tự định (xem các mục bên dư
   bên cộng lại không đủ thì không rải được.
 - Sửa: thêm luật dừng ở trên, thêm test "trên bàn không bao giờ quá tổng số dân". Sau khi sửa, cùng biến thể
   hội tụ sau 4 vòng.
+
+## Lỗi 2 (không hẳn là lỗi): có thế cờ không có giá trị xác định
+- Biến thể 3 ô × 2 dân: 82.885 thế, sau 400 vòng value iteration vẫn còn ~30 thế đổi giá trị mỗi vòng, chênh
+  ±1 điểm. Giá trị bị chặn (|v| ≤ 20) nên không phải lỗi "đẻ dân" như trên.
+- Cách xử lý: chạy 3.000 vòng, thế nào còn đổi trong 1.000 vòng cuối thì đánh dấu "chưa xác định" và **loại khỏi
+  mọi phép đo**, kể cả thế có con là thế chưa xác định (vì khi đó không biết nước nào tối ưu).
+  3 × 2: 78/82.885 thế (0,09%), 3 × 3: 386/585.052 thế.
+- Mình đoán sai nguyên nhân **hai lần** trước khi kiểm tra thật:
+  1. "Chỉ xảy ra sau khi ăn hết cả hai quan to (ô quan còn dân nên ván chưa hết)". Đếm lại: chỉ 10% thế.
+  2. "Ván ăn qua ăn lại rồi rải lại mãi". Đi theo nước tốt nhất từ 78 thế này thì không gặp vòng nào cả.
+- Nguyên nhân thật: lấy đồ thị con chỉ gồm 78 thế này, tách thành phần liên thông mạnh. Ra **8 vòng, mỗi vòng
+  đúng 8 nước, mọi nước trong vòng đều không ăn quân** (64 thế), cộng 14 thế không nằm trên vòng nhưng nước tốt
+  nhất dẫn vào một vòng (vài nước trong số đó là hết dân phải rải, −3 điểm). Giá trị mỗi thế dao động 1 ↔ 2 với chu
+  kỳ 4 vòng lặp: ván bị cắt ở nước thứ t, và ai "kẹt" lượt phải rời vòng phụ thuộc t.
+- Lần thứ ba suýt sai: lúc đầu mình chỉ tìm được một vòng rồi viết luôn "các thế này nằm trên vòng không ăn quân".
+  Viết test kiểm tra cho cả 78 thế thì test đỏ, vì 14 thế dẫn-vào-vòng có nước −3. Câu đúng là câu ở trên.
+- Ai rời vòng cũng chỉ được 1-2 điểm, nên đây là lựa chọn rất nhỏ; loại khỏi phép đo không ảnh hưởng kết luận.
+
+## Solver: số thế cờ đến được từ thế khởi đầu
+| biến thể | thế cờ | value iteration | chưa xác định | giá trị thế đầu (người đi trước) |
+|---|---:|---|---:|---:|
+| 2 ô × 1 dân | 95 | 4 vòng | 0 | −2 |
+| 2 × 2 | 1.039 | 7 | 0 | +4 |
+| 2 × 3 | 7.143 | 12 | 0 | +7 |
+| 2 × 4 | 15.972 | 18 | 0 | −4 |
+| 3 × 1 | 4.311 | 16 | 0 | +10 (thắng trắng) |
+| 3 × 2 | 82.885 | 3.000 (không hội tụ hết) | 78 | −4 |
+| 3 × 3 | 585.052 | 3.000 | 386 | +4 |
+| 4 × 1 | 96.021 | 27 | 0 | −5 |
+
+Quan luôn = 2 ô dân (như bàn chuẩn: 5 dân, quan 10). Lợi thế đi trước đổi dấu liên tục theo kích thước bàn,
+không có quy luật đơn giản kiểu "đi trước luôn lợi".
+
+## MCTS và mạng
+- Ô ăn quan có điểm ngay trong lúc đi, nên MCTS cần phần thưởng trên cạnh như MuZero:
+  Q(x, a) = r(x, a) − V(con). Q chuẩn hoá min-max trong cây vì độ lớn Q đổi nhiều theo giai đoạn ván.
+- Nước chưa thăm lấy Q = giá trị mạng ước lượng của chính nút cha (thay vì 0).
+- Mạng: MLP 3 lớp ẩn 128, ~50k tham số. Mỗi ô mã hoá one-hot số dân 0..6, ≥7 gộp, cộng số dân chia 10.
+- MCTS viết bằng numba: 160 lượt mô phỏng mất 2,2 ms trên laptop. Self-play 400 ván 3 × 2 mất ~7 s với 6 tiến
+  trình, nên không cần GPU, không cần Colab.
+- Forward numba khớp PyTorch tới 1e-8. Bản TypeScript trên web khớp bản Python: luật trên 120 ván ngẫu nhiên (3
+  biến thể), logits sai < 1e-4, số lượt thăm MCTS 64 lượt trùng hoàn toàn trên 40 thế thử.
+- Lỗi vặt: numba từ chối `x @ W` vì `np.maximum(…, 0.0)` đẩy float32 lên float64; phải dùng `np.float32(0.0)`.

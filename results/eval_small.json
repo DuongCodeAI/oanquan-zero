@@ -1,0 +1,97 @@
+{
+ "variant": "S3P2Q4",
+ "sims": 160,
+ "positions": 1124,
+ "rows": [
+  {
+   "gen": 0,
+   "policy_opt": 0.37463697967086157,
+   "mcts_opt": 0.77,
+   "value_mae": 4.092803854853233,
+   "n_positions": 1033,
+   "vs_perfect_margin": -2.345,
+   "vs_perfect_score": 0.3475
+  },
+  {
+   "gen": 1,
+   "policy_opt": 0.5527589545014521,
+   "mcts_opt": 0.8083333333333333,
+   "value_mae": 3.527108609664761,
+   "n_positions": 1033,
+   "vs_perfect_margin": -1.275,
+   "vs_perfect_score": 0.3875
+  },
+  {
+   "gen": 2,
+   "policy_opt": 0.6185866408518877,
+   "mcts_opt": 0.835,
+   "value_mae": 3.4361877632095377,
+   "n_positions": 1033,
+   "vs_perfect_margin": -0.99,
+   "vs_perfect_score": 0.3875
+  },
+  {
+   "gen": 3,
+   "policy_opt": 0.6476282671829623,
+   "mcts_opt": 0.8383333333333334,
+   "value_mae": 2.894044355511271,
+   "n_positions": 1033,
+   "vs_perfect_margin": -1.33,
+   "vs_perfect_score": 0.3875
+  },
+  {
+   "gen": 5,
+   "policy_opt": 0.7095837366892546,
+   "mcts_opt": 0.86,
+   "value_mae": 2.6785627124024045,
+   "n_positions": 1033,
+   "vs_perfect_margin": -1.205,
+   "vs_perfect_score": 0.375
+  },
+  {
+   "gen": 8,
+   "policy_opt": 0.7754114230396902,
+   "mcts_opt": 0.8866666666666667,
+   "value_mae": 2.36941991208098,
+   "n_positions": 1033,
+   "vs_perfect_margin": -0.68,
+   "vs_perfect_score": 0.415
+  },
+  {
+   "gen": 12,
+   "policy_opt": 0.7734753146176185,
+   "mcts_opt": 0.89,
+   "value_mae": 2.2679634194699316,
+   "n_positions": 1033,
+   "vs_perfect_margin": -0.64,
+   "vs_perfect_score": 0.3825
+  },
+  {
+   "gen": 20,
+   "policy_opt": 0.8112294288480155,
+   "mcts_opt": 0.9183333333333333,
+   "value_mae": 2.18205534447949,
+   "n_positions": 1033,
+   "vs_perfect_margin": -0.43,
+   "vs_perfect_score": 0.4425
+  },
+  {
+   "gen": 30,
+   "policy_opt": 0.8160696999031946,
+   "mcts_opt": 0.9183333333333333,
+   "value_mae": 1.9712250177641615,
+   "n_positions": 1033,
+   "vs_perfect_margin": -0.485,
+   "vs_perfect_score": 0.4025
+  },
+  {
+   "gen": 40,
+   "policy_opt": 0.8499515972894482,
+   "mcts_opt": 0.9166666666666666,
+   "value_mae": 1.8970951137176029,
+   "n_positions": 1033,
+   "vs_perfect_margin": -0.17,
+   "vs_perfect_score": 0.47
+  }
+ ]
+}

@@ -1,0 +1,33 @@
+[project]
+name = "oanquan-zero"
+version = "0.1.0"
+description = "AlphaZero tự học Ô ăn quan từ số 0, kiểm chứng bằng lời giải chính xác trên các biến thể nhỏ"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{ name = "Tiến Dương", email = "duongcodeai2@gmail.com" }]
+dependencies = ["numpy>=1.26", "numba>=0.60"]
+
+[project.optional-dependencies]
+train = ["torch>=2.2", "matplotlib>=3.8"]
+dev = ["pytest>=8", "ruff>=0.5"]
+
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

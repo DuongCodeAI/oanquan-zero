@@ -1,0 +1,102 @@
+{
+ "S2P1Q2": {
+  "squares": 2,
+  "stones": 1,
+  "quan": 2,
+  "total_points": 8,
+  "states": 95,
+  "unresolved": 0,
+  "root_value": -2,
+  "root_unresolved": false,
+  "first_moves": {
+   "0": -2,
+   "1": -2,
+   "2": -2,
+   "3": -2
+  }
+ },
+ "S2P2Q4": {
+  "squares": 2,
+  "stones": 2,
+  "quan": 4,
+  "total_points": 16,
+  "states": 1039,
+  "unresolved": 0,
+  "root_value": 4,
+  "root_unresolved": false,
+  "first_moves": {
+   "0": -2,
+   "1": 4,
+   "2": 4,
+   "3": -2
+  }
+ },
+ "S2P3Q6": {
+  "squares": 2,
+  "stones": 3,
+  "quan": 6,
+  "total_points": 24,
+  "states": 7143,
+  "unresolved": 0,
+  "root_value": 7,
+  "root_unresolved": false,
+  "first_moves": {
+   "0": 7,
+   "1": 4,
+   "2": 4,
+   "3": 7
+  }
+ },
+ "S2P4Q8": {
+  "squares": 2,
+  "stones": 4,
+  "quan": 8,
+  "total_points": 32,
+  "states": 15972,
+  "unresolved": 0,
+  "root_value": -4,
+  "root_unresolved": false,
+  "first_moves": {
+   "0": -10,
+   "1": -4,
+   "2": -4,
+   "3": -10
+  }
+ },
+ "S3P1Q2": {
+  "squares": 3,
+  "stones": 1,
+  "quan": 2,
+  "total_points": 10,
+  "states": 4311,
+  "unresolved": 0,
+  "root_value": 10,
+  "root_unresolved": false,
+  "first_moves": {
+   "0": 10,
+   "1": 10,
+   "2": -6,
+   "3": -6,
+   "4": 10,
+   "5": 10
+  }
+ },
+ "S3P2Q4": {
+  "squares": 3,
+  "stones": 2,
+  "quan": 4,
+  "total_points": 20,
+  "states": 82885,
+  "unresolved": 78,
+  "root_value": -4,
+  "root_unresolved": false,
+  "first_moves": {
+   "0": -4,
+   "1": -14,
+   "2": -6,
+   "3": -6,
+   "4": -14,
+   "5": -4
+  }
+ }
+}
